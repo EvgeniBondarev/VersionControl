@@ -16,3 +16,4 @@ C:\Users\evgen\source\repos\VersionControl\Client\bin\Debug\net8.0\Core.dll
 C:\Users\evgen\source\repos\VersionControl\Client\bin\Debug\net8.0\Core.pdb
 C:\Users\evgen\source\repos\VersionControl\Client\obj\Debug\net8.0\Client.csproj.AssemblyReference.cache
 C:\Users\evgen\source\repos\VersionControl\Client\obj\Debug\net8.0\Client.csproj.Up2Date
+C:\Users\evgen\source\repos\VersionControl\Client\obj\Debug\net8.0\Client.sourcelink.json

@@ -9,7 +9,8 @@ class Program
     public static void Main(string[] args)
     {
         FileTransferClient client = new FileTransferClient("127.0.0.1", 5000);
-        client.SendDirectory(@"D:\test\username\repo_name"); 
+        client.SendDirectory(@"D:\test\username\repo_name");
+
         client.RequestDirectory(@"D:\test\username");
     }
 }
