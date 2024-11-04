@@ -3,20 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\evgen\\source\\repos\\VersionControl\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|c:\\users\\evgen\\source\\repos\\versioncontrol\\core\\filemanager\\filetransferserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|solutionrelative:core\\filemanager\\filetransferserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|c:\\users\\evgen\\source\\repos\\versioncontrol\\core\\filemanager\\filetransferclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|solutionrelative:core\\filemanager\\filetransferclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FBE151D6-E54E-43D4-960F-E99F924AE86E}|Client\\Client.csproj|c:\\users\\evgen\\source\\repos\\versioncontrol\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FBE151D6-E54E-43D4-960F-E99F924AE86E}|Client\\Client.csproj|solutionrelative:client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2904FF13-B48A-405E-A6FE-DD0EF6208089}|VersionControl\\Server.csproj|c:\\users\\evgen\\source\\repos\\versioncontrol\\versioncontrol\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2904FF13-B48A-405E-A6FE-DD0EF6208089}|VersionControl\\Server.csproj|solutionrelative:versioncontrol\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|c:\\users\\evgen\\source\\repos\\versioncontrol\\core\\filemanager\\filesendserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|solutionrelative:core\\filemanager\\filesendserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|c:\\users\\evgen\\source\\repos\\versioncontrol\\core\\filemanager\\filereceiveclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|solutionrelative:core\\filemanager\\filereceiveclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|c:\\users\\evgen\\source\\repos\\versioncontrol\\core\\filemanager\\filetransferserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|solutionrelative:core\\filemanager\\filetransferserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|c:\\users\\evgen\\source\\repos\\versioncontrol\\core\\filemanager\\filetransferclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|solutionrelative:core\\filemanager\\filetransferclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1ED88910-4068-4F28-AF82-D8E93629CAD2}|Core\\Core.csproj|c:\\users\\evgen\\source\\repos\\versioncontrol\\core\\filemanager\\ifiletransfer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -38,17 +46,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Client\\Program.cs",
               "RelativeDocumentMoniker": "Client\\Program.cs",
               "ToolTip": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Client\\Program.cs",
               "RelativeToolTip": "Client\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-02T09:15:53.875Z",
               "IsPinned": true,
@@ -56,7 +64,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
+              "Title": "FileSendServer.cs",
+              "DocumentMoniker": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\FileManager\\FileSendServer.cs",
+              "RelativeDocumentMoniker": "Core\\FileManager\\FileSendServer.cs",
+              "ToolTip": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\FileManager\\FileSendServer.cs",
+              "RelativeToolTip": "Core\\FileManager\\FileSendServer.cs",
+              "ViewState": "AgIAAEMAAAAAAAAAAAAIwGYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-04T19:09:01.85Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FileReceiveClient.cs",
+              "DocumentMoniker": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\FileManager\\FileReceiveClient.cs",
+              "RelativeDocumentMoniker": "Core\\FileManager\\FileReceiveClient.cs",
+              "ToolTip": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\FileManager\\FileReceiveClient.cs",
+              "RelativeToolTip": "Core\\FileManager\\FileReceiveClient.cs",
+              "ViewState": "AgIAADsAAAAAAAAAAAAIwFQAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-04T19:08:37.896Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "Core.csproj",
               "DocumentMoniker": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\Core.csproj",
               "RelativeDocumentMoniker": "Core\\Core.csproj",
@@ -68,45 +102,46 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "FileTransferServer.cs",
               "DocumentMoniker": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\FileManager\\FileTransferServer.cs",
               "RelativeDocumentMoniker": "Core\\FileManager\\FileTransferServer.cs",
               "ToolTip": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\FileManager\\FileTransferServer.cs",
               "RelativeToolTip": "Core\\FileManager\\FileTransferServer.cs",
-              "ViewState": "AgIAAHIAAAAAAAAAAAAAwJQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAYwBEAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-04T06:45:01.059Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "FileTransferClient.cs",
               "DocumentMoniker": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\FileManager\\FileTransferClient.cs",
               "RelativeDocumentMoniker": "Core\\FileManager\\FileTransferClient.cs",
               "ToolTip": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\FileManager\\FileTransferClient.cs",
               "RelativeToolTip": "Core\\FileManager\\FileTransferClient.cs",
-              "ViewState": "AgIAAGcAAAAAAAAAAAAIwIoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACAAAAAAAAAAAAAIwEMAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-04T06:44:23.781Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "IFileTransfer.cs",
               "DocumentMoniker": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\FileManager\\IFileTransfer.cs",
               "RelativeDocumentMoniker": "Core\\FileManager\\IFileTransfer.cs",
               "ToolTip": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Core\\FileManager\\IFileTransfer.cs",
               "RelativeToolTip": "Core\\FileManager\\IFileTransfer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-04T06:43:58.904Z"
+              "WhenOpened": "2024-11-04T06:43:58.904Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "Server.csproj",
               "DocumentMoniker": "C:\\Users\\evgen\\source\\repos\\VersionControl\\VersionControl\\Server.csproj",
               "RelativeDocumentMoniker": "VersionControl\\Server.csproj",
@@ -118,13 +153,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\evgen\\source\\repos\\VersionControl\\VersionControl\\Program.cs",
               "RelativeDocumentMoniker": "VersionControl\\Program.cs",
               "ToolTip": "C:\\Users\\evgen\\source\\repos\\VersionControl\\VersionControl\\Program.cs",
               "RelativeToolTip": "VersionControl\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABlAAAAAAAAAA==",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAtwBEAAABcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-02T09:15:03.221Z",
               "EditorCaption": ""
