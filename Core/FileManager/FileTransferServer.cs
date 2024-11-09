@@ -74,24 +74,35 @@ public class FileTransferServer : IFileTransfer
         }
 
         string repoDirectory = Path.Combine(_destinationDirectory, repositoryName);
-        Directory.CreateDirectory(repoDirectory);
 
-        // Создаём папку versions, если её нет
-        string versionsDir = Path.Combine(repoDirectory, "versions");
-        Directory.CreateDirectory(versionsDir);
-
-        // Определяем следующую версию архива
-        string newVersionName = GetNextVersion(versionsDir);
-        string receivedFilePath = Path.Combine(versionsDir, newVersionName);
-
-        lock (fileLock)
+        if (fileSize == 0)
         {
-            File.WriteAllBytes(receivedFilePath, fileData);
+            // Если файл пустой, просто создаем папку
+            Directory.CreateDirectory(repoDirectory);
+            Console.WriteLine($"Создана пустая директория {repoDirectory} для репозитория {repositoryName}");
         }
+        else
+        {
+            // Если файл не пустой, продолжаем обычную обработку
+            Directory.CreateDirectory(repoDirectory);
 
-        Console.WriteLine($"Файл {fileName} сохранён как {newVersionName} в {versionsDir}");
+            // Создаём папку versions, если её нет
+            string versionsDir = Path.Combine(repoDirectory, "versions");
+            Directory.CreateDirectory(versionsDir);
 
-        ExtractFile(receivedFilePath, repoDirectory);
+            // Определяем следующую версию архива
+            string newVersionName = GetNextVersion(versionsDir);
+            string receivedFilePath = Path.Combine(versionsDir, newVersionName);
+
+            lock (fileLock)
+            {
+                File.WriteAllBytes(receivedFilePath, fileData);
+            }
+
+            Console.WriteLine($"Файл {fileName} сохранён как {newVersionName} в {versionsDir}");
+
+            ExtractFile(receivedFilePath, repoDirectory);
+        }
     }
 
     // Функция для определения следующего версионного имени

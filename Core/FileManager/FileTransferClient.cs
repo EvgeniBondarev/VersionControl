@@ -21,32 +21,48 @@ namespace Core.FileManager
 
         public void SendDirectory(string directoryPath, string repositoryName)
         {
-            string zipFilePath = Path.Combine(Path.GetTempPath(), "archive.zip");
-
-            try
+            if (string.IsNullOrEmpty(directoryPath))
             {
-                lock (fileLock)
+                // Если путь не передан, отправляем только имя репозитория
+                try
                 {
-                    // Архивируем папку
-                    ZipFile.CreateFromDirectory(directoryPath, zipFilePath);
-                    Console.WriteLine($"Папка {directoryPath} заархивирована в {zipFilePath}");
-
-                    // Отправляем архив на сервер вместе с именем репозитория
-                    SendFile(zipFilePath, "archive.zip", repositoryName);
+                    SendEmptyRepository(repositoryName);
+                    Console.WriteLine($"Папка {repositoryName} создана на сервере без файлов.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Ошибка при передаче репозитория: " + ex.Message);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("Ошибка при передаче файла: " + ex.Message);
-            }
-            finally
-            {
-                // Потокобезопасное удаление временного файла
-                lock (fileLock)
+                string zipFilePath = Path.Combine(Path.GetTempPath(), "archive.zip");
+
+                try
                 {
-                    if (File.Exists(zipFilePath))
+                    lock (fileLock)
                     {
-                        File.Delete(zipFilePath);
+                        // Архивируем папку
+                        ZipFile.CreateFromDirectory(directoryPath, zipFilePath);
+                        Console.WriteLine($"Папка {directoryPath} заархивирована в {zipFilePath}");
+
+                        // Отправляем архив на сервер вместе с именем репозитория
+                        SendFile(zipFilePath, "archive.zip", repositoryName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Ошибка при передаче файла: " + ex.Message);
+                }
+                finally
+                {
+                    // Потокобезопасное удаление временного файла
+                    lock (fileLock)
+                    {
+                        if (File.Exists(zipFilePath))
+                        {
+                            File.Delete(zipFilePath);
+                        }
                     }
                 }
             }
@@ -70,6 +86,26 @@ namespace Core.FileManager
             stream.Write(fileData, 0, fileData.Length);
 
             Console.WriteLine("Файл успешно отправлен на сервер.");
+        }
+
+        private void SendEmptyRepository(string repositoryName)
+        {
+            using TcpClient client = new TcpClient(_serverAddress, _port);
+            using NetworkStream stream = client.GetStream();
+
+            byte[] repoNameBytes = Encoding.UTF8.GetBytes(repositoryName);
+            stream.Write(BitConverter.GetBytes(repoNameBytes.Length), 0, 4);
+            stream.Write(repoNameBytes, 0, repoNameBytes.Length);
+
+            byte[] fileNameBytes = Encoding.UTF8.GetBytes(string.Empty);  // Отправляем пустое имя файла
+            stream.Write(BitConverter.GetBytes(fileNameBytes.Length), 0, 4);
+            stream.Write(fileNameBytes, 0, fileNameBytes.Length);
+
+            byte[] fileData = new byte[0];  // Пустой файл
+            stream.Write(BitConverter.GetBytes(fileData.Length), 0, 4);
+            stream.Write(fileData, 0, fileData.Length);
+
+            Console.WriteLine("Пустой репозиторий успешно отправлен на сервер.");
         }
     }
 }
