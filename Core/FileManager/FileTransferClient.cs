@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace Core.FileManager
 {
@@ -10,6 +11,7 @@ namespace Core.FileManager
     {
         private readonly string _serverAddress;
         private readonly int _port;
+        private static readonly object fileLock = new object();
 
         public FileTransferClient(string serverAddress, int port)
         {
@@ -23,12 +25,15 @@ namespace Core.FileManager
 
             try
             {
-                // Архивируем папку
-                ZipFile.CreateFromDirectory(directoryPath, zipFilePath);
-                Console.WriteLine($"Папка {directoryPath} заархивирована в {zipFilePath}");
+                lock (fileLock)
+                {
+                    // Архивируем папку
+                    ZipFile.CreateFromDirectory(directoryPath, zipFilePath);
+                    Console.WriteLine($"Папка {directoryPath} заархивирована в {zipFilePath}");
 
-                // Отправляем архив на сервер вместе с именем репозитория
-                SendFile(zipFilePath, "archive.zip", repositoryName);
+                    // Отправляем архив на сервер вместе с именем репозитория
+                    SendFile(zipFilePath, "archive.zip", repositoryName);
+                }
             }
             catch (Exception ex)
             {
@@ -36,10 +41,13 @@ namespace Core.FileManager
             }
             finally
             {
-                // Удаляем временный ZIP файл
-                if (File.Exists(zipFilePath))
+                // Потокобезопасное удаление временного файла
+                lock (fileLock)
                 {
-                    File.Delete(zipFilePath);
+                    if (File.Exists(zipFilePath))
+                    {
+                        File.Delete(zipFilePath);
+                    }
                 }
             }
         }
@@ -49,17 +57,14 @@ namespace Core.FileManager
             using TcpClient client = new TcpClient(_serverAddress, _port);
             using NetworkStream stream = client.GetStream();
 
-            // Отправляем имя репозитория
             byte[] repoNameBytes = Encoding.UTF8.GetBytes(repositoryName);
             stream.Write(BitConverter.GetBytes(repoNameBytes.Length), 0, 4);
             stream.Write(repoNameBytes, 0, repoNameBytes.Length);
 
-            // Отправляем имя файла
             byte[] fileNameBytes = Encoding.UTF8.GetBytes(fileName);
             stream.Write(BitConverter.GetBytes(fileNameBytes.Length), 0, 4);
             stream.Write(fileNameBytes, 0, fileNameBytes.Length);
 
-            // Отправляем содержимое файла
             byte[] fileData = File.ReadAllBytes(filePath);
             stream.Write(BitConverter.GetBytes(fileData.Length), 0, 4);
             stream.Write(fileData, 0, fileData.Length);

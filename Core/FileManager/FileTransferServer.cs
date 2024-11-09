@@ -5,11 +5,13 @@ using System.IO.Compression;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 public class FileTransferServer : IFileTransfer
 {
     private readonly int _port;
     private readonly string _destinationDirectory;
+    private static readonly object fileLock = new object();
 
     public FileTransferServer(int port, string destinationDirectory)
     {
@@ -71,15 +73,36 @@ public class FileTransferServer : IFileTransfer
             totalRead += stream.Read(fileData, totalRead, fileSize - totalRead);
         }
 
-        // Сохраняем и разархивируем файл
         string repoDirectory = Path.Combine(_destinationDirectory, repositoryName);
         Directory.CreateDirectory(repoDirectory);
 
-        string receivedFilePath = Path.Combine(repoDirectory, fileName);
-        File.WriteAllBytes(receivedFilePath, fileData);
-        Console.WriteLine($"Файл {fileName} получен и сохранен в {repoDirectory}");
+        // Создаём папку versions, если её нет
+        string versionsDir = Path.Combine(repoDirectory, "versions");
+        Directory.CreateDirectory(versionsDir);
+
+        // Определяем следующую версию архива
+        string newVersionName = GetNextVersion(versionsDir);
+        string receivedFilePath = Path.Combine(versionsDir, newVersionName);
+
+        lock (fileLock)
+        {
+            File.WriteAllBytes(receivedFilePath, fileData);
+        }
+
+        Console.WriteLine($"Файл {fileName} сохранён как {newVersionName} в {versionsDir}");
 
         ExtractFile(receivedFilePath, repoDirectory);
+    }
+
+    // Функция для определения следующего версионного имени
+    private string GetNextVersion(string versionsDir)
+    {
+        int version = 1;
+        while (File.Exists(Path.Combine(versionsDir, $"v.{version}.zip")))
+        {
+            version++;
+        }
+        return $"v.{version}.zip";
     }
 
     private void ExtractFile(string zipFilePath, string destinationDirectory)
@@ -87,7 +110,10 @@ public class FileTransferServer : IFileTransfer
         string tempDirectory = Path.Combine(destinationDirectory, "TempExtract");
         Directory.CreateDirectory(tempDirectory);
 
-        ZipFile.ExtractToDirectory(zipFilePath, tempDirectory);
+        lock (fileLock)
+        {
+            ZipFile.ExtractToDirectory(zipFilePath, tempDirectory);
+        }
         Console.WriteLine($"Файл {zipFilePath} успешно разархивирован во временную директорию {tempDirectory}");
 
         foreach (string filePath in Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories))
@@ -95,12 +121,17 @@ public class FileTransferServer : IFileTransfer
             string relativePath = Path.GetRelativePath(tempDirectory, filePath);
             string destinationPath = Path.Combine(destinationDirectory, relativePath);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
-            File.Copy(filePath, destinationPath, overwrite: true);
+            lock (fileLock)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+                File.Copy(filePath, destinationPath, overwrite: true);
+            }
         }
 
-        Directory.Delete(tempDirectory, recursive: true);
-        File.Delete(zipFilePath);
-        Console.WriteLine($"Файл {zipFilePath} успешно разархивирован и заменён в {destinationDirectory}");
+        lock (fileLock)
+        {
+            Directory.Delete(tempDirectory, recursive: true);
+        }
+        Console.WriteLine($"Архив {zipFilePath} успешно разархивирован и заменён в {destinationDirectory}");
     }
 }

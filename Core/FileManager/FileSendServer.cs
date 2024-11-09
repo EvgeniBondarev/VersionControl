@@ -10,6 +10,7 @@ public class FileSendServer : IFileTransfer
 {
     private readonly int _port;
     private readonly string _baseDirectory;
+    private static readonly object fileLock = new object();
 
     public FileSendServer(int port, string baseDirectory)
     {
@@ -30,18 +31,25 @@ public class FileSendServer : IFileTransfer
 
             try
             {
-                // Получаем имя репозитория от клиента
                 string repositoryName = ReceiveRepositoryName(stream);
 
-                // Проверяем существование директории репозитория
+                // Получаем номер версии
+                byte[] versionBytes = new byte[4];
+                stream.Read(versionBytes, 0, 4);
+                int versionNumber = BitConverter.ToInt32(versionBytes, 0);
+
                 string repositoryPath = Path.Combine(_baseDirectory, repositoryName);
+
                 if (!Directory.Exists(repositoryPath))
                 {
                     Console.WriteLine($"Репозиторий '{repositoryName}' не найден.");
-                    return;
+                    continue;
                 }
 
-                SendDirectory(stream, repositoryPath);
+                lock (fileLock)
+                {
+                    SendDirectory(stream, repositoryPath, versionNumber != -1 ? versionNumber : (int?)null);
+                }
             }
             catch (Exception ex)
             {
@@ -58,34 +66,54 @@ public class FileSendServer : IFileTransfer
 
         byte[] nameBytes = new byte[nameSize];
         stream.Read(nameBytes, 0, nameSize);
-        string repositoryName = Encoding.UTF8.GetString(nameBytes);
-
-        Console.WriteLine($"Получено имя репозитория: {repositoryName}");
-        return repositoryName;
+        return Encoding.UTF8.GetString(nameBytes);
     }
 
-    private void SendDirectory(NetworkStream stream, string sourceDirectory)
+    private void SendDirectory(NetworkStream stream, string sourceDirectory, int? versionNumber)
     {
         string zipFilePath = Path.Combine(Path.GetTempPath(), "archive.zip");
 
         try
         {
-            // Архивируем директорию перед отправкой
-            ZipFile.CreateFromDirectory(sourceDirectory, zipFilePath);
-            string fileName = "archive.zip";
-            Console.WriteLine($"Папка {sourceDirectory} заархивирована в {zipFilePath}");
+            if (versionNumber.HasValue && versionNumber > 0)
+            {
+                // Если указан номер версии, ищем архив в папке "version"
+                string versionPath = Path.Combine(sourceDirectory, "versions", $"v.{versionNumber}.zip");
+                if (File.Exists(versionPath))
+                {
+                    SendFile(versionPath, $"v{versionNumber}.zip", stream);
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine($"Архив версии v{versionNumber} не найден.");
+                }
+            }
 
-            SendFile(zipFilePath, fileName, stream);
+            // Если версия не указана или архив версии не найден, отправляем основной репозиторий
+            using (var zipArchive = ZipFile.Open(zipFilePath, ZipArchiveMode.Create))
+            {
+                foreach (string filePath in Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories))
+                {
+                    if (filePath.Contains(Path.Combine(sourceDirectory, "version")))
+                        continue;
+
+                    string relativePath = Path.GetRelativePath(sourceDirectory, filePath);
+                    zipArchive.CreateEntryFromFile(filePath, relativePath);
+                }
+            }
+
+            SendFile(zipFilePath, "archive.zip", stream);
         }
         finally
         {
-            // Удаляем временный архив после отправки
             if (File.Exists(zipFilePath))
             {
                 File.Delete(zipFilePath);
             }
         }
     }
+
 
     private void SendFile(string filePath, string fileName, NetworkStream stream)
     {
@@ -96,7 +124,6 @@ public class FileSendServer : IFileTransfer
         byte[] fileData = File.ReadAllBytes(filePath);
         stream.Write(BitConverter.GetBytes(fileData.Length), 0, 4);
         stream.Write(fileData, 0, fileData.Length);
-
         Console.WriteLine("Файл успешно отправлен клиенту.");
     }
 }

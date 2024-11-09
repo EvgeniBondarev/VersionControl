@@ -1,8 +1,5 @@
 ﻿using Core.FileManager;
-using System;
-using System.IO.Compression;
-using System.Net.Sockets;
-using System.Text;
+
 
 class Program
 {
@@ -14,6 +11,6 @@ class Program
         Thread.Sleep(1000);
 
         FileReceiveClient client2 = new FileReceiveClient("127.0.0.1", 5001);
-        client2.ReceiveDirectory(@"D:\test\username", "repo1");
+        client2.ReceiveDirectory(@"D:\test\username", "repo1", 1);
     }
 }

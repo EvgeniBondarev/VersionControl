@@ -10,6 +10,7 @@ namespace Core.FileManager
     {
         private readonly string _serverAddress;
         private readonly int _port;
+        private static readonly object fileLock = new object();
 
         public FileReceiveClient(string serverAddress, int port)
         {
@@ -17,19 +18,23 @@ namespace Core.FileManager
             _port = port;
         }
 
-        public void ReceiveDirectory(string destinationDirectory, string repositoryName)
+        public void ReceiveDirectory(string destinationDirectory, string repositoryName, int? versionNumber = null)
         {
             using TcpClient client = new TcpClient(_serverAddress, _port);
             using NetworkStream stream = client.GetStream();
 
             try
             {
-                // Отправляем имя репозитория серверу
+                // Отправляем имя репозитория
                 byte[] repositoryNameBytes = Encoding.UTF8.GetBytes(repositoryName);
                 stream.Write(BitConverter.GetBytes(repositoryNameBytes.Length), 0, 4);
                 stream.Write(repositoryNameBytes, 0, repositoryNameBytes.Length);
 
-                // Получаем архив с сервера и извлекаем его
+                // Отправляем номер версии (если он указан)
+                byte[] versionBytes = BitConverter.GetBytes(versionNumber.HasValue ? versionNumber.Value : -1);
+                stream.Write(versionBytes, 0, 4);
+
+                // Получаем архив и извлекаем его
                 ReceiveFile(stream, destinationDirectory);
             }
             catch (Exception ex)
@@ -38,9 +43,9 @@ namespace Core.FileManager
             }
         }
 
+
         private void ReceiveFile(NetworkStream stream, string destinationDirectory)
         {
-            // Получаем имя файла
             byte[] nameSizeBytes = new byte[4];
             stream.Read(nameSizeBytes, 0, 4);
             int nameSize = BitConverter.ToInt32(nameSizeBytes, 0);
@@ -49,7 +54,6 @@ namespace Core.FileManager
             stream.Read(nameBytes, 0, nameSize);
             string fileName = Encoding.UTF8.GetString(nameBytes);
 
-            // Получаем содержимое файла
             byte[] fileSizeBytes = new byte[4];
             stream.Read(fileSizeBytes, 0, 4);
             int fileSize = BitConverter.ToInt32(fileSizeBytes, 0);
@@ -61,12 +65,17 @@ namespace Core.FileManager
                 totalRead += stream.Read(fileData, totalRead, fileSize - totalRead);
             }
 
-            // Сохраняем и разархивируем файл
-            string receivedFilePath = Path.Combine(destinationDirectory, fileName);
-            File.WriteAllBytes(receivedFilePath, fileData);
-            Console.WriteLine($"Файл {fileName} получен и сохранен в {destinationDirectory}");
+            lock (fileLock)
+            {
+                string receivedFilePath = Path.Combine(destinationDirectory, fileName);
+                using (FileStream fs = new FileStream(receivedFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    fs.Write(fileData, 0, fileData.Length);
+                }
 
-            ExtractFile(receivedFilePath, destinationDirectory);
+                Console.WriteLine($"Файл {fileName} получен и сохранен в {destinationDirectory}");
+                ExtractFile(receivedFilePath, destinationDirectory);
+            }
         }
 
         private void ExtractFile(string zipFilePath, string destinationDirectory)
@@ -74,21 +83,31 @@ namespace Core.FileManager
             string tempDirectory = Path.Combine(destinationDirectory, "TempExtract");
             Directory.CreateDirectory(tempDirectory);
 
-            ZipFile.ExtractToDirectory(zipFilePath, tempDirectory);
-            Console.WriteLine($"Файл {zipFilePath} успешно разархивирован во временную директорию {tempDirectory}");
-
-            foreach (string filePath in Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories))
+            lock (fileLock)
             {
-                string relativePath = Path.GetRelativePath(tempDirectory, filePath);
-                string destinationPath = Path.Combine(destinationDirectory, relativePath);
-
-                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
-                File.Copy(filePath, destinationPath, overwrite: true);
+                // Извлекаем содержимое архива во временную директорию
+                ZipFile.ExtractToDirectory(zipFilePath, tempDirectory);
             }
 
-            Directory.Delete(tempDirectory, recursive: true);
-            File.Delete(zipFilePath);
-            Console.WriteLine($"Файл {zipFilePath} успешно разархивирован и заменён в {destinationDirectory}");
+            Console.WriteLine($"Файл {zipFilePath} успешно разархивирован во временную директорию {tempDirectory}");
+
+            lock (fileLock)
+            {
+                foreach (string filePath in Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories))
+                {
+                    string relativePath = Path.GetRelativePath(tempDirectory, filePath);
+                    string destinationPath = Path.Combine(destinationDirectory, relativePath);
+
+                    // Создаем директории и копируем файлы
+                    Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+                    File.Copy(filePath, destinationPath, true);
+                }
+
+                Directory.Delete(tempDirectory, true);
+                File.Delete(zipFilePath);
+                Console.WriteLine($"Файл {zipFilePath} успешно разархивирован и сохранен в {destinationDirectory}");
+            }
         }
+
     }
 }
