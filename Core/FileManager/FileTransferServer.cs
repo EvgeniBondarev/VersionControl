@@ -118,6 +118,9 @@ public class FileTransferServer : IFileTransfer
 
     private void ExtractFile(string zipFilePath, string destinationDirectory)
     {
+        // Удаляем все файлы и папки в `destinationDirectory`, кроме папки `versions`
+        ClearDirectoryExceptVersions(destinationDirectory);
+
         string tempDirectory = Path.Combine(destinationDirectory, "TempExtract");
         Directory.CreateDirectory(tempDirectory);
 
@@ -127,6 +130,7 @@ public class FileTransferServer : IFileTransfer
         }
         Console.WriteLine($"Файл {zipFilePath} успешно разархивирован во временную директорию {tempDirectory}");
 
+        // Копируем файлы из временной директории в `destinationDirectory`
         foreach (string filePath in Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories))
         {
             string relativePath = Path.GetRelativePath(tempDirectory, filePath);
@@ -139,10 +143,37 @@ public class FileTransferServer : IFileTransfer
             }
         }
 
+        // Удаляем временную директорию
         lock (fileLock)
         {
             Directory.Delete(tempDirectory, recursive: true);
         }
         Console.WriteLine($"Архив {zipFilePath} успешно разархивирован и заменён в {destinationDirectory}");
     }
+
+    /// <summary>
+    /// Удаляет все файлы и папки в указанной директории, кроме папки `versions`.
+    /// </summary>
+    private void ClearDirectoryExceptVersions(string directory)
+    {
+        foreach (string dir in Directory.GetDirectories(directory))
+        {
+            if (Path.GetFileName(dir).Equals("versions", StringComparison.OrdinalIgnoreCase))
+                continue; // Не удаляем папку `versions`
+
+            lock (fileLock)
+            {
+                Directory.Delete(dir, recursive: true);
+            }
+        }
+
+        foreach (string file in Directory.GetFiles(directory))
+        {
+            lock (fileLock)
+            {
+                File.Delete(file);
+            }
+        }
+    }
+
 }

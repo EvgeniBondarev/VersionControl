@@ -78,8 +78,7 @@
               "RelativeToolTip": "VersionControl\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-09T14:59:25.935Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-09T14:59:25.935Z"
             },
             {
               "$type": "Document",
@@ -89,7 +88,7 @@
               "RelativeDocumentMoniker": "Client\\Program.cs",
               "ToolTip": "C:\\Users\\evgen\\source\\repos\\VersionControl\\Client\\Program.cs",
               "RelativeToolTip": "Client\\Program.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAQwFoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAQwFoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-09T14:48:08.192Z",
               "EditorCaption": ""
@@ -140,8 +139,7 @@
               "RelativeToolTip": "Core\\CommandManager\\CommandRegistry.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAAvwBsAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-09T15:44:08.507Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-09T15:44:08.507Z"
             }
           ]
         }
