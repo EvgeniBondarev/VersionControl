@@ -16,6 +16,11 @@ namespace Core.CommandManager
             _commands[command.Name] = command;
         }
 
+        public void ClearCommands()
+        {
+            _commands.Clear();
+        }
+
         public void ExecuteCommand(string commandName, string[] args)
         {
             if (_commands.TryGetValue(commandName, out var command))

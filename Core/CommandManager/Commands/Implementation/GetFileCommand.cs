@@ -5,19 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.CommandManager.Commands
+namespace Core.CommandManager.Commands.Implementation
 {
-    public class GetFileCommand : ICommand
+    public class GetFileCommand : UserCommand
     {
         private FileReceiveClient _fileReceiveClient;
-        public string Name => "get";
+        public override string Name => "get";
 
-        public GetFileCommand(FileReceiveClient fileReceiveClient)
+        public GetFileCommand(FileReceiveClient fileReceiveClient, string user) : base(user)
         {
             _fileReceiveClient = fileReceiveClient;
         }
 
-        public void Execute(string[] args)
+        public override void Execute(string[] args)
         {
             if (args.Length == 0)
             {
@@ -30,13 +30,13 @@ namespace Core.CommandManager.Commands
             int? version = null;
             if (args.Length > 2)
             {
-                version = Int32.Parse(args[2]);
+                version = int.Parse(args[2]);
             }
-            
+
             try
             {
-                _fileReceiveClient.ReceiveDirectory(userDirectory, repoName, version);
-                Console.WriteLine($"Files were copied to the directory `{userDirectory}` from {repoName}" + 
+                _fileReceiveClient.ReceiveDirectory(userDirectory, $@"{_user}/{repoName}", version);
+                Console.WriteLine($"Files were copied to the directory `{userDirectory}` from `{_user}/{repoName}`" +
                                     version != null ? $" v.{version}" : "");
             }
             catch (Exception ex)

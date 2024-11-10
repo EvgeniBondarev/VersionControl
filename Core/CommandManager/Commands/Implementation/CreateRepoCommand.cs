@@ -5,19 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.CommandManager.Commands
+namespace Core.CommandManager.Commands.Implementation
 {
-    public class CreateRepoCommand : ICommand
+    public class CreateRepoCommand : UserCommand
     {
         private FileTransferClient _fileTransferClient;
-        public string Name => "create";
+        public override string Name => "create";
 
-        public CreateRepoCommand(FileTransferClient fileTransferClient)
+        public string User;
+
+        public CreateRepoCommand(FileTransferClient fileTransferClient, string user) : base(user)
         {
             _fileTransferClient = fileTransferClient;
         }
 
-        public void Execute(string[] args)
+        public override void Execute(string[] args)
         {
             if (args.Length == 0)
             {
@@ -28,14 +30,14 @@ namespace Core.CommandManager.Commands
             string repoName = args[0];
             try
             {
-                _fileTransferClient.SendDirectory(string.Empty, repoName);
-                Console.WriteLine($"Repository '{repoName}' created.");
+                _fileTransferClient.SendDirectory(string.Empty, $@"{_user}/{repoName}");
+                Console.WriteLine($"Repository '{_user}/{repoName}' created.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Repository created error: {ex.Message}.");
             }
-            
+
         }
     }
 }
