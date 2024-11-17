@@ -1,6 +1,7 @@
 ﻿using Core.CommandManager;
 using Core.CommandManager.Commands;
 using Core.CommandManager.Commands.Implementation;
+using Core.CommentManager;
 using Core.FileManager;
 
 
@@ -10,6 +11,7 @@ class Program
     {
         FileTransferClient client = new FileTransferClient("127.0.0.1", 5000);
         FileReceiveClient client2 = new FileReceiveClient("127.0.0.1", 5001);
+        CommentClient client3 = new CommentClient("127.0.0.1", 5002);
 
         CommandRegistry commandRegistry = new CommandRegistry();
 
@@ -17,7 +19,7 @@ class Program
 
         while (true)
         {
-            RegisterCommands(commandRegistry, client, client2, userName);
+            RegisterCommands(commandRegistry, client, client2, client3, userName);
             PrintInstructions();
 
             while (true)
@@ -67,13 +69,15 @@ class Program
 
     private static void RegisterCommands(CommandRegistry commandRegistry,
                                          FileTransferClient client, 
-                                         FileReceiveClient client2, 
+                                         FileReceiveClient client2,
+                                         CommentClient commentClient,
                                          string userName)
     {
         commandRegistry.ClearCommands(); 
         commandRegistry.RegisterCommand(new CreateRepoCommand(client, userName));
         commandRegistry.RegisterCommand(new AddFileCommand(client, userName));
         commandRegistry.RegisterCommand(new GetFileCommand(client2, userName));
+        commandRegistry.RegisterCommand(new CommentCommand(commentClient, userName));
     }
 
     private static void PrintInstructions()
@@ -83,6 +87,8 @@ class Program
         Console.WriteLine(">> add `user directory` `repo name`");
         Console.WriteLine(">> get `user directory` `repo name`");
         Console.WriteLine(">> get `user directory` `repo name` `version(int)`");
+        Console.WriteLine(">> comment `repo name` `comment content`");
+        Console.WriteLine(">> comment `repo name`");
         Console.WriteLine(">> Change user: User `new user name`");
         Console.WriteLine(">> Exit: exit");
     }
